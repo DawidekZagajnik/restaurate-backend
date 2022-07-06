@@ -10,4 +10,4 @@ class Restaurant(db.Model):
     description = db.Column(db.String(200), nullable=True)
     ownerId = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
 
-    owner = db.relationship('User', foreign_keys='users.id')
+    reviews = db.relationship("Review", cascade="all, delete")

@@ -13,5 +13,3 @@ class Review(db.Model):
     timestamp = db.Column(db.Integer, nullable=False)
     restaurantId = db.Column(db.Integer, db.ForeignKey(Restaurant.id))
 
-    user = db.relationship('User', foreign_keys='users.id')
-    restaurant = db.relationship("Restaurant", foreign_keys='restaurants.id')

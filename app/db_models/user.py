@@ -8,3 +8,6 @@ class User(db.Model):
     username = db.Column(db.String(50), nullable=False)
     passHash = db.Column(db.String(50), nullable=False)
     salt = db.Column(db.String(20), nullable=False)
+
+    reviews = db.relationship("Review", cascade="all, delete", foreign_keys="Review.userId")
+    restaurant = db.relationship("Restaurant", cascade="all, delete", foreign_keys="Restaurant.ownerId")
