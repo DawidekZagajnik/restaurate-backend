@@ -10,7 +10,7 @@ user_blueprint = Blueprint("user_endpoints", __name__, template_folder=None)
 
 
 @user_blueprint.route("/user", methods=["POST", "GET", "DELETE"])
-def hello():
+def user_endpoints():
     if request.method == "POST":
         payload = UserPayload(**request.json)
         result = User.query.filter_by(username=payload.username)
@@ -29,7 +29,7 @@ def hello():
     elif request.method == "GET":
         result = User.query.get(request.args["id"])
         if result:
-            return result
+            return result.dict()
         else:
             return f"No user with ID {request.args['id']} found", 404
 
@@ -41,4 +41,3 @@ def hello():
             return "Deleted", 200
         else:
             return f"User with ID {request.args['id']} not found", 404
-

@@ -1,4 +1,5 @@
 from app.service.db import db
+from flask_sqlalchemy import inspect
 
 
 class User(db.Model):
@@ -11,3 +12,6 @@ class User(db.Model):
 
     reviews = db.relationship("Review", cascade="all, delete", foreign_keys="Review.userId")
     restaurant = db.relationship("Restaurant", cascade="all, delete", foreign_keys="Restaurant.ownerId")
+
+    def dict(self):
+        return {c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs}
