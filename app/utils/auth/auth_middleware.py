@@ -27,7 +27,7 @@ def requires_auth():
 
 
 def set_token(user: User):
-    token = token_hex(20)
+    token = token_hex(32)
 
     redis_client.client.set(name=f"AUTH-{token}", value=json.dumps(user.dict()), ex=15 * 60)
 
