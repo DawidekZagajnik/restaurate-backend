@@ -12,6 +12,7 @@ class Restaurant(db.Model):
     ownerId = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
 
     reviews = db.relationship("Review", cascade="all, delete")
+    owner = db.relationship("User", viewonly=True)
 
     def dict(self):
         return {c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs}

@@ -5,6 +5,7 @@ from endpoints.login_endpoint import login_blueprint
 from endpoints.restaurant_endpoint import restaurant_blueprint
 from endpoints.user_endpoint import user_blueprint
 from endpoints.review_endpoint import review_blueprint
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.register_blueprint(user_blueprint)
@@ -19,6 +20,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql://{config.mysql_username}:" \
                                         f"{config.mysql_database}"
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+CORS(app)
 
 db.init_app(app)
 

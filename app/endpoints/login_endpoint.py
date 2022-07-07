@@ -16,6 +16,6 @@ def login_user():
             return set_token(user), 200
 
         else:
-            return "Username or password are incorrect", 401
+            return "Username or password is incorrect", 401
     else:
-        return "Username or password are incorrect", 401
+        return "Username or password is incorrect", 401

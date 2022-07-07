@@ -41,6 +41,10 @@ def create_restaurant(curr_user: User):
     except ValidationError as e:
         return str(e), 422
 
+    result = Restaurant.query.filter_by(name=payload.name).all()
+    if result:
+        return f"Restaurant with name {payload.name} already exists.", 409
+
     restaurant = Restaurant(
         name=payload.name,
         description=payload.description,
@@ -49,3 +53,15 @@ def create_restaurant(curr_user: User):
     db.session.add(restaurant)
     db.session.commit()
     return {"inserted": 1}
+
+
+@restaurant_blueprint.route("/restaurants", methods=["GET"])
+@requires_auth()
+def load_restaurants(_: User):
+    start = request.args.get("start", 0)
+    limit = request.args.get("limit", 5)
+
+    return {
+        "result": [{**rest.dict(), "owner": rest.owner.username} for rest in
+                   Restaurant.query.offset(start).limit(limit).all()]
+    }
