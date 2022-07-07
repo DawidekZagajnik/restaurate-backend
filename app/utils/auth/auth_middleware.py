@@ -3,6 +3,7 @@ from functools import wraps
 from app.service.redis_client import redis_client
 from app.db_models import User
 from secrets import token_hex
+import json
 
 
 def requires_auth():
@@ -18,7 +19,7 @@ def requires_auth():
 
             redis_client.client.expire(name=f"AUTH-{token}", time=15 * 60)
 
-            return func(User(**user), *args, **kwargs)
+            return func(User(**json.loads(user)), *args, **kwargs)
 
         return wrapper
 
@@ -28,6 +29,6 @@ def requires_auth():
 def set_token(user: User):
     token = token_hex(20)
 
-    redis_client.client.set(name=f"AUTH-{token}", value=user.dict(), ex=15 * 60)
+    redis_client.client.set(name=f"AUTH-{token}", value=json.dumps(user.dict()), ex=15 * 60)
 
     return token
