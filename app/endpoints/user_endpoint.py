@@ -5,6 +5,7 @@ from app.domain.user_payload import UserPayload
 from hashlib import sha1
 import random
 from app.utils.auth.auth_middleware import requires_auth
+from pydantic import ValidationError
 
 
 user_blueprint = Blueprint("user_endpoints", __name__, template_folder=None)
@@ -35,7 +36,12 @@ def user_endpoints(curr_user: User, id: int):
 
 @user_blueprint.route("/user", methods=["POST"])
 def register_user():
-    payload = UserPayload(**request.json)
+    try:
+        payload = UserPayload(**request.json)
+
+    except ValidationError as e:
+        return str(e), 422
+
     result = User.query.filter_by(username=payload.username).first()
     if result:
         return f"User with username {payload.username} already exists.", 409

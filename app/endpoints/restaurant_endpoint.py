@@ -3,6 +3,7 @@ from app.db_models import Restaurant, User
 from app.service.db import db
 from app.domain.restaurant_payload import RestaurantPayload
 from app.utils.auth.auth_middleware import requires_auth
+from pydantic import ValidationError
 
 
 restaurant_blueprint = Blueprint("restaurant_endpoints", __name__, template_folder=None)
@@ -34,7 +35,12 @@ def restaurant_endpoints(curr_user: User, id: int):
 @restaurant_blueprint.route("/restaurant", methods=["POST"])
 @requires_auth()
 def create_restaurant(curr_user: User):
-    payload = RestaurantPayload(**request.json)
+    try:
+        payload = RestaurantPayload(**request.json)
+
+    except ValidationError as e:
+        return str(e), 422
+
     restaurant = Restaurant(
         name=payload.name,
         description=payload.description,
