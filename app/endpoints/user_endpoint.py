@@ -4,13 +4,15 @@ from app.service.db import db
 from app.domain.user_payload import UserPayload
 from hashlib import sha1
 import random
+from app.utils.auth.auth_middleware import requires_auth
 
 
 user_blueprint = Blueprint("user_endpoints", __name__, template_folder=None)
 
 
 @user_blueprint.route("/user", methods=["POST", "GET", "DELETE"])
-def user_endpoints():
+@requires_auth()
+def user_endpoints(user: User):
     if request.method == "POST":
         payload = UserPayload(**request.json)
         result = User.query.filter_by(username=payload.username)
@@ -27,6 +29,7 @@ def user_endpoints():
         return {"inserted": 1}
 
     elif request.method == "GET":
+        print(user.username)
         result = User.query.get(request.args["id"])
         if result:
             return result.dict()
