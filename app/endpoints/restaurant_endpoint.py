@@ -60,8 +60,9 @@ def create_restaurant(curr_user: User):
 def load_restaurants(_: User):
     start = request.args.get("start", 0)
     limit = request.args.get("limit", 5)
+    query = request.args.get("query", "")
 
     return {
         "result": [{**rest.dict(), "owner": rest.owner.username} for rest in
-                   Restaurant.query.offset(start).limit(limit).all()]
+                   Restaurant.query.filter(Restaurant.name.like(f"%{query}%")).offset(start).limit(limit).all()]
     }

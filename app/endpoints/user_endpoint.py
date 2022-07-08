@@ -34,6 +34,16 @@ def user_endpoints(curr_user: User, id: int):
         return {"deleted": 1}
 
 
+@user_blueprint.route("/my-account", methods=["GET"])
+@requires_auth()
+def my_account_endpoint(curr_user: User):
+    user = User.query.get(curr_user.id)
+    if user:
+        return user.dict()
+    else:
+        return f"User with ID {id} not found.", 404
+
+
 @user_blueprint.route("/user", methods=["POST"])
 def register_user():
     try:
