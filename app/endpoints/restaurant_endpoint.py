@@ -58,11 +58,14 @@ def create_restaurant(curr_user: User):
 @restaurant_blueprint.route("/restaurants", methods=["GET"])
 @requires_auth()
 def load_restaurants(_: User):
-    start = request.args.get("start", 0)
-    limit = request.args.get("limit", 5)
+    page = int(request.args.get("page", "0"))
+    pagesize = int(request.args.get("pagesize", "6"))
     query = request.args.get("query", "")
+
+    result = Restaurant.query.filter(Restaurant.name.like(f"%{query}%"))
 
     return {
         "result": [{**rest.dict(), "owner": rest.owner.username} for rest in
-                   Restaurant.query.filter(Restaurant.name.like(f"%{query}%")).offset(start).limit(limit).all()]
+                   result.offset(page * pagesize).limit(pagesize).all()],
+        "has_more": result.count() > pagesize * page + pagesize
     }
