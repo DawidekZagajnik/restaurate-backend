@@ -6,7 +6,7 @@ from secrets import token_hex
 import json
 
 
-def requires_auth():
+def requires_auth(return_user: bool = True):
 
     def decorator(func):
         @wraps(func)
@@ -19,7 +19,10 @@ def requires_auth():
 
             redis_client.client.expire(name=f"AUTH-{token}", time=15 * 60)
 
-            return func(User(**json.loads(user)), *args, **kwargs)
+            if return_user is True:
+                return func(User(**json.loads(user)), *args, **kwargs)
+            else:
+                return func(*args, **kwargs)
 
         return wrapper
 

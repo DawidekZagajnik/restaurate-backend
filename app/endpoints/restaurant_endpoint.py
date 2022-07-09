@@ -5,31 +5,32 @@ from app.domain.restaurant_payload import RestaurantPayload
 from app.utils.auth.auth_middleware import requires_auth
 from pydantic import ValidationError
 
-
 restaurant_blueprint = Blueprint("restaurant_endpoints", __name__, template_folder=None)
 
 
-@restaurant_blueprint.route("/restaurant/<id>", methods=["GET", "DELETE"])
+@restaurant_blueprint.route("/restaurant/<id>", methods=["DELETE"])
 @requires_auth()
-def restaurant_endpoints(curr_user: User, id: int):
-    if request.method == "GET":
-        result = Restaurant.query.get(id)
-        if not result:
-            return f"Restaurant with ID {id} not found.", 404
-        return result.dict()
+def delete_restaurant(curr_user: User, id: int):
+    result = Restaurant.query.get(id)
+    if not result:
+        return f"Restaurant with ID {id} not found.", 404
 
-    elif request.method == "DELETE":
-        result = Restaurant.query.get(id)
-        if not result:
-            return f"Restaurant with ID {id} not found.", 404
+    if curr_user.id != result.ownerId:
+        return f"You can delete only your restaurant.", 409
 
-        if curr_user.id != result.ownerId:
-            return f"You can delete only your restaurant.", 409
+    db.session.delete(result)
+    db.session.commit()
 
-        db.session.delete(result)
-        db.session.commit()
+    return {"deleted": 1}
 
-        return {"deleted": 1}
+
+@restaurant_blueprint.route("/restaurant/<id>", methods=["GET"])
+@requires_auth(return_user=False)
+def get_restaurant(id: int):
+    result = Restaurant.query.get(id)
+    if not result:
+        return f"Restaurant with ID {id} not found.", 404
+    return result.dict()
 
 
 @restaurant_blueprint.route("/restaurant", methods=["POST"])
@@ -56,8 +57,8 @@ def create_restaurant(curr_user: User):
 
 
 @restaurant_blueprint.route("/restaurants", methods=["GET"])
-@requires_auth()
-def load_restaurants(_: User):
+@requires_auth(return_user=False)
+def load_restaurants():
     page = int(request.args.get("page", "0"))
     pagesize = int(request.args.get("pagesize", "6"))
     query = request.args.get("query", "")

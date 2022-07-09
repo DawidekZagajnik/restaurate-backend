@@ -7,31 +7,32 @@ import random
 from app.utils.auth.auth_middleware import requires_auth
 from pydantic import ValidationError
 
-
 user_blueprint = Blueprint("user_endpoints", __name__, template_folder=None)
 
 
 @user_blueprint.route("/user/<id>", methods=["GET", "DELETE"])
 @requires_auth()
 def user_endpoints(curr_user: User, id: int):
-    if request.method == "GET":
-        user = User.query.get(id)
-        if user:
-            return user.dict()
-        else:
-            return f"User with ID {id} not found.", 404
+    if curr_user.id != id:
+        return f"You can delete only your account.", 409
 
-    elif request.method == "DELETE":
-        if curr_user.id != id:
-            return f"You can delete only your account.", 409
+    user = User.query.get(id)
+    if not user:
+        return f"User with ID {id} not found.", 404
 
-        user = User.query.get(id)
-        if not user:
-            return f"User with ID {id} not found.", 404
+    db.session.delete(user)
+    db.session.commit()
+    return {"deleted": 1}
 
-        db.session.delete(user)
-        db.session.commit()
-        return {"deleted": 1}
+
+@user_blueprint.route("/user/<id>", methods=["GET"])
+@requires_auth(return_user=False)
+def get_user(id: int):
+    user = User.query.get(id)
+    if user:
+        return user.dict()
+    else:
+        return f"User with ID {id} not found.", 404
 
 
 @user_blueprint.route("/my-account", methods=["GET"])
