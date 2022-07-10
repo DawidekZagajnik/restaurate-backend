@@ -1,6 +1,7 @@
 from app.service.db import db
 from app.db_models.restaurant import Restaurant
 from app.db_models.user import User
+from flask_sqlalchemy import inspect
 
 
 class Review(db.Model):
@@ -12,4 +13,9 @@ class Review(db.Model):
     rate = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.Integer, nullable=False)
     restaurantId = db.Column(db.Integer, db.ForeignKey(Restaurant.id))
+
+    user = db.relationship("User", viewonly=True)
+
+    def dict(self):
+        return {c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs}
 

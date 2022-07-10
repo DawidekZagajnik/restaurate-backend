@@ -30,7 +30,7 @@ def get_restaurant(id: int):
     result = Restaurant.query.get(id)
     if not result:
         return f"Restaurant with ID {id} not found.", 404
-    return result.dict()
+    return {**result.dict(), "owner": result.owner.username}
 
 
 @restaurant_blueprint.route("/restaurant", methods=["POST"])
