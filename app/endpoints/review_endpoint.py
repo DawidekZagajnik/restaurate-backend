@@ -43,7 +43,13 @@ def add_review(curr_user: User):
 
     db.session.add(review)
     db.session.commit()
-    return {"inserted": 1}
+    return {
+        "inserted": {
+            **review.dict(),
+            "timestamp": datetime.utcfromtimestamp(review.timestamp).strftime("%Y-%m-%d %H:%M"),
+            "user": review.user.username
+        }
+    }
 
 
 @review_blueprint.route("/reviews/<restaurant_id>", methods=["GET"])
