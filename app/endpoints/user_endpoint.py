@@ -10,7 +10,7 @@ from pydantic import ValidationError
 user_blueprint = Blueprint("user_endpoints", __name__, template_folder=None)
 
 
-@user_blueprint.route("/user/<id>", methods=["GET", "DELETE"])
+@user_blueprint.route("/user/<id>", methods=["DELETE"])
 @requires_auth()
 def user_endpoints(curr_user: User, id: int):
     if curr_user.id != id:
@@ -30,7 +30,7 @@ def user_endpoints(curr_user: User, id: int):
 def get_user(id: int):
     user = User.query.get(id)
     if user:
-        return user.dict()
+        return {"username": user.username, "id": user.id}
     else:
         return f"User with ID {id} not found.", 404
 
