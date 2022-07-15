@@ -8,7 +8,8 @@ class Restaurant(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False)
-    description = db.Column(db.String(200), nullable=True)
+    description = db.Column(db.String(200), nullable=False)
+    address = db.Column(db.String(50), nullable=False)
     ownerId = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
 
     reviews = db.relationship("Review", cascade="all, delete")

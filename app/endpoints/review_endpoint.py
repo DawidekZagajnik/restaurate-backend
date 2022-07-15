@@ -70,4 +70,21 @@ def load_reviews_for_restaurant(restaurant_id: int):
     }
 
 
+@review_blueprint.route("/my-reviews", methods=["GET"])
+@requires_auth()
+def load_reviews_for_user(user: User):
+    page = int(request.args.get("page", "0"))
+    pagesize = int(request.args.get("pagesize", "6"))
+
+    result = Review.query.filter(Review.userId == user.id).order_by(Review.timestamp.desc())
+
+    return {
+        "result": [{
+            **rest.dict(),
+            "timestamp": datetime.utcfromtimestamp(rest.timestamp).strftime("%Y-%m-%d %H:%M"),
+            "user": user.username
+        } for rest in result.offset(page * pagesize).limit(pagesize).all()],
+        "has_more": result.count() > pagesize * page + pagesize
+    }
+
 

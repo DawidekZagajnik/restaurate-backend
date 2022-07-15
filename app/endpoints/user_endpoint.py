@@ -40,7 +40,7 @@ def get_user(id: int):
 def my_account_endpoint(curr_user: User):
     user = User.query.get(curr_user.id)
     if user:
-        return user.dict()
+        return {**user.dict(), "review_count": len(user.reviews)}
     else:
         return f"User with ID {id} not found.", 404
 
