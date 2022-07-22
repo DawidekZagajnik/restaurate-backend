@@ -49,7 +49,8 @@ def create_restaurant(curr_user: User):
     restaurant = Restaurant(
         name=payload.name,
         description=payload.description,
-        ownerId=curr_user.id
+        ownerId=curr_user.id,
+        address=payload.address
     )
     db.session.add(restaurant)
     db.session.commit()

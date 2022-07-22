@@ -3,3 +3,4 @@ Flask-SQLAlchemy
 pydantic
 redis
 flask-cors
+waitress

@@ -6,6 +6,7 @@ from endpoints.restaurant_endpoint import restaurant_blueprint
 from endpoints.user_endpoint import user_blueprint
 from endpoints.review_endpoint import review_blueprint
 from flask_cors import CORS
+from waitress import serve
 
 app = Flask(__name__)
 app.register_blueprint(user_blueprint)
@@ -26,5 +27,4 @@ CORS(app)
 db.init_app(app)
 
 if __name__ == "__main__":
-
-    app.run(debug=True, port=8282, host="0.0.0.0", threaded=True)
+    serve(app, host="0.0.0.0", port=8282)
