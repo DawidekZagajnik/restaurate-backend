@@ -75,7 +75,7 @@ That belong to user with given ID, and `has_more` flag:
 ```json
 {
   "has_more": false,
-  "result": [...]
+  "result": ["..."]
 }
 ```
 
@@ -147,7 +147,7 @@ Returns array of reviews (check below) for restaurant with given ID and `has_mor
       "rate": "<integer-between-0-and-5>",
       "restaurantId": "<given-restaurant-id>"
     },
-    ...
+    "..."
   ]
 }
 ```
@@ -169,7 +169,7 @@ Takes `page` and `pagesize` parameters.
       "rate": "<integer-between-0-and-5>",
       "restaurantId": "<restaurant-id>"
     },
-    ...
+    "..."
   ]
 }
 ```
