@@ -15,6 +15,7 @@ class Review(db.Model):
     restaurantId = db.Column(db.Integer, db.ForeignKey(Restaurant.id))
 
     user = db.relationship("User", viewonly=True)
+    restaurant = db.relationship("Restaurant", viewonly=True)
 
     def dict(self):
         return {c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs}

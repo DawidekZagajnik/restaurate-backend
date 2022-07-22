@@ -70,3 +70,18 @@ def load_restaurants():
                    result.offset(page * pagesize).limit(pagesize).all()],
         "has_more": result.count() > pagesize * page + pagesize
     }
+
+
+@restaurant_blueprint.route("/restaurants/user/<id>", methods=["GET"])
+@requires_auth(return_user=False)
+def load_restaurant_of_user(id: int):
+    page = int(request.args.get("page", "0"))
+    pagesize = int(request.args.get("pagesize", "6"))
+
+    result = Restaurant.query.filter(Restaurant.ownerId == id).order_by(Restaurant.id.desc())
+
+    return {
+        "result": [{**rest.dict(), "owner": rest.owner.username} for rest in
+                   result.offset(page * pagesize).limit(pagesize).all()],
+        "has_more": result.count() > pagesize * page + pagesize
+    }

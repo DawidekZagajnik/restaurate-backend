@@ -82,7 +82,8 @@ def load_reviews_for_user(user: User):
         "result": [{
             **rest.dict(),
             "timestamp": datetime.utcfromtimestamp(rest.timestamp).strftime("%Y-%m-%d %H:%M"),
-            "user": user.username
+            "user": user.username,
+            "restaurant": rest.restaurant.name
         } for rest in result.offset(page * pagesize).limit(pagesize).all()],
         "has_more": result.count() > pagesize * page + pagesize
     }
