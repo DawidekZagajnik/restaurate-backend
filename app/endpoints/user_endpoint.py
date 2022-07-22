@@ -42,7 +42,7 @@ def my_account_endpoint(curr_user: User):
     if user:
         return {**user.dict(), "review_count": len(user.reviews)}
     else:
-        return f"User with ID {id} not found.", 404
+        return f"User with ID {curr_user.id} not found.", 404
 
 
 @user_blueprint.route("/user", methods=["POST"])
