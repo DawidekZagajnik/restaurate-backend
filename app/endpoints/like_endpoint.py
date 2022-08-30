@@ -33,3 +33,12 @@ def delete_like(curr_user: User, review_id: int):
         db.session.delete(likes.pop())
         db.session.commit()
         return {"deleted": 1}
+
+
+@like_blueprint.route("/likes/<review_id>", methods=["GET"])
+@requires_auth()
+def get_like_count(_: User, review_id: int):
+    return {
+        "likes": Like.query.filter(Like.reviewId == review_id).count()
+    }
+
