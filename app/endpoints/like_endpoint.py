@@ -40,6 +40,6 @@ def delete_like(curr_user: User, review_id: int):
 def get_like_count(curr_user: User, review_id: int):
     return {
         "likes": Like.query.filter(Like.reviewId == review_id).count(),
-        "liked": bool(Like.query.filter(Like.userId == curr_user.id and Like.reviewId == review_id).all())
+        "liked": Like.query.filter(Like.userId == curr_user.id and Like.reviewId == review_id).all() != []
     }
 
