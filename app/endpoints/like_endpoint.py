@@ -37,8 +37,9 @@ def delete_like(curr_user: User, review_id: int):
 
 @like_blueprint.route("/likes/<review_id>", methods=["GET"])
 @requires_auth()
-def get_like_count(_: User, review_id: int):
+def get_like_count(curr_user: User, review_id: int):
     return {
-        "likes": Like.query.filter(Like.reviewId == review_id).count()
+        "likes": Like.query.filter(Like.reviewId == review_id).count(),
+        "liked": bool(Like.query.filter(Like.userId == curr_user.id and Like.reviewId == review_id).all())
     }
 
